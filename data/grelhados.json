@@ -1,0 +1,39 @@
+{
+  "updated_at": "2026-04-20T16:37:00.159680+00:00",
+  "source_url": "https://cms.ua.pt/ementas/grelhados",
+  "total_nodes": 4,
+  "meals_by_date": {
+    "2026-04-21": {
+      "url": "https://cms.ua.pt/ementas/node/36312",
+      "almoço": {
+        "sopa": "Sopa Primavera",
+        "carne": "Costeleta de porco grelhada ou Bife de vaca grelhado",
+        "peixe": "Bacalhau grelhado ou Cavala grelhada"
+      }
+    },
+    "2026-04-22": {
+      "url": "https://cms.ua.pt/ementas/node/36315",
+      "almoço": {
+        "sopa": "Sopa de nabo com feijão frade",
+        "carne": "Secretos de porco grelhados ou Costeleta de peru grelhadas",
+        "peixe": "Abrótea grelhada ou Tentáculos de lulas grelhadas"
+      }
+    },
+    "2026-04-23": {
+      "url": "https://cms.ua.pt/ementas/node/36318",
+      "almoço": {
+        "sopa": "Sopa de alho francês",
+        "carne": "Entrecosto de porco grelhado ou Coelho de churrasco",
+        "peixe": "Peixe espada grelhado ou Robalo grelhado"
+      }
+    },
+    "2026-04-24": {
+      "url": "https://cms.ua.pt/ementas/node/36321",
+      "almoço": {
+        "sopa": "Sopa de nabiças",
+        "carne": "Lombo de porco grelhado ou hambúrguer de frango grelhado",
+        "peixe": "Atum á posta grelhado ou Maruca grelhada"
+      }
+    }
+  }
+}

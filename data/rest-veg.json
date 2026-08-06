@@ -1,0 +1,100 @@
+{
+  "updated_at": "2026-04-20T16:37:07.660307+00:00",
+  "source_url": "https://cms.ua.pt/ementas/calendario-restaurante-vegetariano",
+  "total_nodes": 5,
+  "meals_by_date": {
+    "2026-04-20": {
+      "url": "https://cms.ua.pt/ementas/node/35081",
+      "almoço": [
+        "Sopa de abóbora",
+        "Arroz integral",
+        "Esparguete integral",
+        "Omelete de aveia",
+        "Falafel de grão",
+        "Pimentos padrone",
+        "Chilli de soja",
+        "Batata á Espanhola",
+        "Puré de cenoura",
+        "Brócolos gratinados"
+      ]
+    },
+    "2026-04-21": {
+      "url": "https://cms.ua.pt/ementas/node/35108",
+      "almoço": [
+        "Sopa á portuguesa",
+        "Arroz integral",
+        "Esparguete integral",
+        "Bolinhos de milho",
+        "Feijão vermelho",
+        "Lentilhas estufadas com chouriço",
+        "Almôndegas de soja",
+        "Batata doce rústica",
+        "Abóbora com alho",
+        "Tomate confit"
+      ]
+    },
+    "2026-04-22": {
+      "url": "https://cms.ua.pt/ementas/node/35093",
+      "almoço": [
+        "Creme de ervilhas",
+        "Arroz integral",
+        "Esparguete integral",
+        "Seitan à Alentejana",
+        "Salada de amendoim e couve roxa",
+        "Feijão preto",
+        "Grão com batatas no forno",
+        "Mandioca frita",
+        "Beringela panada",
+        "Nabo ao molho branco"
+      ]
+    },
+    "2026-04-23": {
+      "url": "https://cms.ua.pt/ementas/node/35087",
+      "almoço": [
+        "Sopa de alho francês",
+        "Arroz integral",
+        "Esparguete integral",
+        "Millet simples",
+        "Croquetes de tremoço",
+        "Jardineira de ervilhas",
+        "Tofu á Brás",
+        "Puré de batata",
+        "Cenoura estufada com orégãos",
+        "Pesto de brócolos"
+      ]
+    },
+    "2026-04-24": {
+      "url": "https://cms.ua.pt/ementas/node/35090",
+      "almoço": [
+        "Canja de legumes",
+        "Arroz integral",
+        "Esparguete integral",
+        "Creme de milho",
+        "Feijão vermelho",
+        "Bolonhesa de lentilhas",
+        "Strogonoff de tofu",
+        "Batata doce com espinafres e nozes",
+        "Nhoque de abóbora",
+        "Tomate recheado com cogumelos"
+      ]
+    }
+  },
+  "errors": [
+    {
+      "url": "https://cms.ua.pt/ementas/node/35096",
+      "reason": "Could not parse menu fields"
+    },
+    {
+      "url": "https://cms.ua.pt/ementas/node/35099",
+      "reason": "Could not parse menu fields"
+    },
+    {
+      "url": "https://cms.ua.pt/ementas/node/35102",
+      "reason": "Could not parse menu fields"
+    },
+    {
+      "url": "https://cms.ua.pt/ementas/node/35105",
+      "reason": "Could not parse menu fields"
+    }
+  ]
+}

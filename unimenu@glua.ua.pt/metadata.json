@@ -1,0 +1,12 @@
+{
+  "name": "UniMenu",
+  "description": "UniMenu is a GNOME Shell extension that displays real-time university canteen menus in the desktop top bar.",
+  "uuid": "unimenu@glua.ua.pt",
+  "shell-version": [
+    "45",
+    "46",
+    "47"
+  ],
+  "version": 2,
+  "url": "https://glua.ua.pt/"
+}
