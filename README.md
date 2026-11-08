@@ -21,7 +21,7 @@ UniMenu é uma extensão para o GNOME Shell que mostra as ementas das cantinas u
 
 ## Preferências
 
-A janela de preferências permite ativar ou ocultar cantinas no menu principal. É necessário manter pelo menos uma cantina ativa. A página «About» apresenta informações sobre a extensão e ligações do GLUA.
+A janela de preferências permite ativar ou ocultar cantinas no menu principal. É necessário manter pelo menos uma cantina ativa. A página `About` apresenta informações sobre a extensão e ligações do GLUA.
 
 As definições são declaradas em `schemas/org.gnome.shell.extensions.unimenu.gschema.xml` e `schemas/gschemas.compiled` é a versão compilada usada pelo GNOME.
 
@@ -67,41 +67,32 @@ Quando o computador entra em modo sleep ou hibernate, o temporizador fica suspen
 A extensão deve estar instalada na pasta de extensões do utilizador:
 
 ```bash
+cd unimenu@glua.ua.pt
 mkdir -p ~/.local/share/gnome-shell/extensions/unimenu@glua.ua.pt
 cp -r . ~/.local/share/gnome-shell/extensions/unimenu@glua.ua.pt/
 ```
 
-Criar symbolic link:
+Criar symbolic link (opcional para desenvolvimento):
 
 ```bash
+cd your_development_folder
 ln -s ~/.local/share/gnome-shell/extensions/unimenu@glua.ua.pt
 ```
 
-## Testar
-
-### 1. Iniciar um servidor local (temporário)
-
-Na pasta `data`:
-
-```bash
-cd data
-python3 -m http.server 8000
-```
-
-### 3. Ativar a extensão
+## Ativar a extensão
 
 ```bash
 gnome-extensions enable unimenu@glua.ua.pt
 ```
 
-### 4. Recarregar a extensão
+## Recarregar a extensão
 
 ```bash
 gnome-extensions disable unimenu@glua.ua.pt
 gnome-extensions enable unimenu@glua.ua.pt
 ```
 
-### 5. Reiniciar GNOME Shell
+## Reiniciar GNOME Shell
 
 ```bash
 Alt+F2
