@@ -17,6 +17,7 @@ export async function fetchServerData(url) {
         let data = JSON.parse(decoder.decode(bytes.get_data()));
         return data;
     } catch (e) {
+        logError(e, 'UniMenu: falha ao obter dados da API');
         return null;
     }
 }

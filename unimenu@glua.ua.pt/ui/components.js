@@ -14,27 +14,38 @@ export function createCard(title, description) {
 }
 
 /* Função auxiliar para criar o label de tipo de comida */
-export function createDishRow(labelText, dishName, cssBadge) {
+export function createDishRow(labelText, dishName, price, cssBadge) {
     const row = new St.BoxLayout({ vertical: false, style_class: 'dish-row' });
 
-    const badge = new St.Label({
-        text: labelText,
-        style_class: `badge ${cssBadge}`,
-        y_align: Clutter.ActorAlign.START
-    });
-
+    if (labelText) {
+        const badge = new St.Label({
+            text: labelText,
+            style_class: `badge ${cssBadge}`,
+            y_align: Clutter.ActorAlign.START
+        });
+        row.add_child(badge);
+    }
+    
     const nameLabel = new St.Label({
         text: dishName,
+        style_class: 'dish-name',
         y_align: Clutter.ActorAlign.START,
-        x_expand: true
     });
     nameLabel.clutter_text.line_wrap = true;
-
-    row.add_child(badge);
     row.add_child(nameLabel);
+
+    const spacer = new St.Widget({ x_expand: true });
+    row.add_child(spacer);
+
+    const priceLabel = new St.Label({
+        text: price,
+        style_class: 'dish-price',
+        y_align: Clutter.ActorAlign.START,
+    });
+    row.add_child(priceLabel);
+
     return row;
 }
-
 
 /* Função auxiliar para formatar a data */
 export function formatDate(isoDate) {

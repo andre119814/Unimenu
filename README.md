@@ -4,18 +4,26 @@ UniMenu é uma extensão para o GNOME Shell que mostra as ementas das cantinas u
 
 ## Estrutura do projeto
 
-- `extension.js` —  Cria o indicador no painel e controla o ciclo de vida da extensão.
+- `extension.js` — cria o indicador no painel e controla o ciclo de vida da extensão.
+- `prefs.js` — interface de preferências da extensão, onde se escolhem as cantinas visíveis e se consultam informações.
+- `schemas/gschemas.compiled` — versão compilada do schema GSettings, usada pelo GNOME para carregar as definições da extensão.
+- `schemas/org.gnome.shell.extensions.unimenu.gschema.xml` — define as opções GSettings da extensão, incluindo as cantinas ativas por omissão.
 - `ui/ui.js` — implementação do `MenuIndicator` (GObject) que junta o menu principal e a vista de detalhes.
 - `ui/MainMenu.js` — vista inicial com o título, lista de cantinas e botões sociais.
-- `ui/DetailView.js` — vista de detalhes com navegação por datas e cartões de refeições.
+- `ui/DetailView.js` — vista de detalhes com navegação por datas, alternância entre almoço e jantar e ementas.
 - `ui/components.js` — funções auxiliares para criar os elementos visuais da interface.
-- `utils/api.js` — função auxiliar para pedidos HTTP ao servidor com SOAP.
-- `utils/dataUpdater.js` - classe com funções auxiliares para a sincronização de dados.
-- `config.js` — configuração das cantinas, links sociais e URL do servidor e do MYSAS.
+- `utils/api.js` — função auxiliar para pedidos HTTP GET e leitura da resposta JSON do servidor.
+- `utils/dataUpdater.js` - classe responsável para a sincronização de dados.
+- `config.js` — configuração das cantinas, preços, links sociais e URL do servidor e do MYSAS.
 - `stylesheet.css` — estilos visuais da interface.
-- `data/` — ficheiros JSON de exemplo para testes locais.
 - `icons/` — ícones usados na interface.
 - `metadata.json` — metadados da extensão para o GNOME.
+
+## Preferências
+
+A janela de preferências permite ativar ou ocultar cantinas no menu principal. É necessário manter pelo menos uma cantina ativa. A página «About» apresenta informações sobre a extensão e ligações do GLUA.
+
+As definições são declaradas em `schemas/org.gnome.shell.extensions.unimenu.gschema.xml` e `schemas/gschemas.compiled` é a versão compilada usada pelo GNOME.
 
 ## Funcionamento
 

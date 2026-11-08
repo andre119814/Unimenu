@@ -2,11 +2,14 @@ import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import { CANTEENS, GLUA_LINKS, MYSAS } from '../config.js';
 
 export class MainMenu {
     constructor(indicator) {
         this.indicator = indicator;
+        const ext = Extension.lookupByURL(import.meta.url);
+        this.settings = ext.getSettings('org.gnome.shell.extensions.unimenu');
         
         /* Caixa que contém tudo o que pertence ao MainMenu */
         this.view = new St.BoxLayout({ vertical: true });
@@ -20,13 +23,15 @@ export class MainMenu {
         this.view.add_child(canteensLabel);
         
         this.canteensView = new St.BoxLayout({ vertical: true });
-        CANTEENS.forEach(canteen => {
-            const btn = new St.Button({ style_class: 'canteen-button', x_expand: true });
-            btn.set_child(new St.Label({ style_class: 'canteen-label', text: canteen.name }));
-            btn.connect('clicked', () => this.indicator.openMenu(canteen));
-            this.canteensView.add_child(btn);
-        });
         this.view.add_child(this.canteensView);
+
+        /* Desenha a lista pela primeira vez */
+        this._renderCanteens();
+
+        /* Fica à escuta: sempre que mudares um botão nas definições, atualiza o menu! */
+        this.settings.connect('changed::active-canteens', () => {
+            this._renderCanteens();
+        });
 
         /* Botão de carregar o cartão */
         const topupBtn = new St.Button({ style_class: 'card-button', x_expand: true });        
@@ -41,7 +46,7 @@ export class MainMenu {
 
         /* Caixa de botões sociais */
         const socialsLabel = new St.Label({ text: 'Redes Sociais', style_class: 'section-label' });
-        this.view.add_child(socialsLabel);
+        //this.view.add_child(socialsLabel);
         
         this.socialBox = new St.BoxLayout({
             vertical: true,
@@ -88,6 +93,23 @@ export class MainMenu {
             currentCount++;
         });
 
-        this.view.add_child(this.socialBox);
+        //this.view.add_child(this.socialBox);
+    }
+
+    _renderCanteens() {
+        /* Limpa os botões antigos para quando as definições são atualizadas */
+        this.canteensView.destroy_all_children();
+
+        /* Lê as definições e filtra as cantinas */
+        let activeIds = this.settings.get_strv('active-canteens');
+        let activeCanteens = CANTEENS.filter(canteen => activeIds.includes(canteen.id));
+
+        /* Desenha as cantinas ativas */
+        activeCanteens.forEach(canteen => {
+            const btn = new St.Button({ style_class: 'canteen-button', x_expand: true });
+            btn.set_child(new St.Label({ style_class: 'canteen-label', text: canteen.name }));
+            btn.connect('clicked', () => this.indicator.openMenu(canteen));
+            this.canteensView.add_child(btn);
+        });
     }
 }

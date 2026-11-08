@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.unimenu" path="/org/gnome/shell/extensions/unimenu/">
+
+    <key name="active-canteens" type="as">
+      <default>['santiago', 'crasto']</default>
+      <summary>Cantinas Ativas</summary>
+    </key>
+    
+  </schema>
+</schemalist>

@@ -1,11 +1,8 @@
-import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import { CANTEENS, SERVER } from './config.js';
 import { MenuIndicator } from './ui/ui.js';
-import { fetchServerData } from './utils/api.js';
 import { DataUpdater } from './utils/dataUpdater.js';
 
 export default class UniMenuExtension extends Extension {
@@ -17,7 +14,7 @@ export default class UniMenuExtension extends Extension {
 
         this._dataUpdater.startAutoUpdate();
 
-        /* Se o PC for suspenso, deteta quando volta e atualiza os dados */
+        /* Se o PC for suspenso, deteta quando voltou e atualiza os dados */
         this._sleepSignalId = Gio.DBus.system.signal_subscribe(
             'org.freedesktop.login1',
             'org.freedesktop.login1.Manager',

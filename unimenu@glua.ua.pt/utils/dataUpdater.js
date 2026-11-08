@@ -35,6 +35,18 @@ export class DataUpdater {
             this[timer] = null;
         }
     }
+
+    /* Mudar aqui de const para this. */
+    _getDate() {
+        const today = new Date();
+        const fromDate = today.toISOString().split('T')[0];
+
+        const futureDate = new Date(today);
+        futureDate.setDate(futureDate.getDate() + 7);
+        const toDate = futureDate.toISOString().split('T')[0];
+
+        return [fromDate, toDate];
+    }
     
     /* Função para atualizar os dados das ementas */
     async _updateData() {
@@ -45,13 +57,15 @@ export class DataUpdater {
 
         let allMenu = {};
 
-        for (let canteen of CANTEENS) {
-            let url = `${SERVER}${canteen.id}.json`;
-            
-            let canteenData = await fetchServerData(url);
+        let [fromDate, toDate] = this._getDate();
+        let cantinasIds = CANTEENS.map(canteen => canteen.id).join('%2C');
+        let url = `${SERVER}?from=${fromDate}&to=${toDate}&canteens=${cantinasIds}`;
 
-            if (canteenData) {
-                allMenu[canteen.id] = canteenData;
+        let canteenData = await fetchServerData(url);
+
+        if (canteenData && canteenData.canteens) {
+            for (let canteen of canteenData.canteens) {
+                allMenu[canteen.id] = canteen.days;
             }
         }
 
@@ -66,9 +80,10 @@ export class DataUpdater {
         if (Object.keys(allMenu).length === 0) {
             /* Desliga o temporizador principal */
             this._clearTimeout('_timeoutId');
-            
+
             /* Agenda uma nova tentativa em 2 minutos */
             this._scheduleRetry(120);
+
         /* Se for bem sucedido */
         } else {
             /* Desliga o temporizador de falha, se estiver ativo */

@@ -2,6 +2,7 @@ import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 
 import { createCard, createDishRow, formatDate } from './components.js';
+import { PRICE_NORMAL, PRICE_OPTION, PRICE_OTHER } from '../config.js';
 
 export class DetailView {
     constructor(indicator) {
@@ -72,8 +73,8 @@ export class DetailView {
         this.btnDinner = new St.Button({ child: new St.Label({ text: 'Jantar', style_class: 'meal-tab-label' }), style_class: 'meal-tab', x_expand: true, reactive: true });
 
         /* Botões de alternar de refeição (almoço ou jantar) */
-        this.btnLunch.connect('clicked', () => this._changeMeal('almoço'));
-        this.btnDinner.connect('clicked', () => this._changeMeal('jantar'));
+        this.btnLunch.connect('clicked', () => this._changeMeal('lunch'));
+        this.btnDinner.connect('clicked', () => this._changeMeal('dinner'));
 
         this.tabsBox.add_child(this.btnLunch);
         this.tabsBox.add_child(this.btnDinner);
@@ -85,15 +86,15 @@ export class DetailView {
     }
 
     /* Método público chamado pela Main para abrir a ementa */
-    render(canteen, data) {
+    render(canteen, days) {
         this.labelCanteenName.set_text(canteen.name);
         this.foodContainer.destroy_all_children();
 
-        if (data) {
-            this._processJson(data);
+        if (days && days.length > 0) {
+            this._processJson(days);
             this.tabsBox.show();
             this.dateNavBox.show();
-            this._changeMeal('almoço');
+            this._changeMeal('lunch');
         } else {
             this.tabsBox.hide();
             this.dateNavBox.hide();
@@ -107,9 +108,16 @@ export class DetailView {
     }
 
     /* Função auxiliar para processar o JSON da ementa recebida */
-    _processJson(json) {
-        this.availableDays = Object.keys(json.meals_by_date).sort();
-        this.meals = json.meals_by_date;
+    _processJson(daysArray) {
+        this.meals = {};
+        this.availableDays = [];
+
+        for (let day of daysArray) {
+            this.availableDays.push(day.date);
+            this.meals[day.date] = day.meals; 
+        }
+
+        this.availableDays.sort();
         this.currentDayIndex = 0;
     }
 
@@ -126,7 +134,7 @@ export class DetailView {
     _changeMeal(type) {
         this.currentMeal = type;
 
-        if (type === 'almoço') {
+        if (type === 'lunch') {
             this.btnLunch.add_style_class_name('meal-tab-active');
             this.btnDinner.remove_style_class_name('meal-tab-active');
         } else {
@@ -144,35 +152,122 @@ export class DetailView {
         const dateString = this.availableDays[this.currentDayIndex];
         this.dateLabel.set_text(formatDate(dateString));
         this.foodContainer.destroy_all_children();
+        const canteenName = this.labelCanteenName.get_text();
 
-        const mealMenu = this.meals[dateString][this.currentMeal];
+        const mealMenu = this.meals[dateString];
+        const currentMealData = mealMenu.find(m => m.service === this.currentMeal);
 
-        if (!mealMenu) {
-            this.foodContainer.add_child(new St.Label({ text: `Sem ementa para o ${this.currentMeal} neste dia.`, style_class: 'unavailable-label' }));
+        if (!currentMealData || currentMealData.status !== 'available') {
+            const mealName = this.currentMeal === 'lunch' ? 'o almoço' : 'o jantar';
+            this.foodContainer.add_child(new St.Label({ text: `Sem ementa para ${mealName} neste dia.`, style_class: 'unavailable-label' }));
             return;
         }
 
-        if (Array.isArray(mealMenu)) {
-            this.foodContainer.add_child(createCard('SOPA', mealMenu[0]));
+        let sopaCard = null;
+        let extrasList = [];
+        let hasDishes = false;
+        const dishesBox = new St.BoxLayout({ vertical: true, style_class: 'food-card' });
+        dishesBox.add_child(new St.Label({ text: 'PRATOS', style_class: 'card-title' }));
 
-            const dishes = mealMenu.slice(1).join(';\n');
-            this.foodContainer.add_child(createCard('PRATOS', dishes));
-
-        } else {
-            if (mealMenu.sopa) {
-                this.foodContainer.add_child(createCard('SOPA', mealMenu.sopa));
+        for (let item of currentMealData.items) {
+            /* Ignora entradas inválidas */
+            if (!item.text || item.text.replace(/[^a-zA-Z0-9À-ÿ]/g, '').trim().length === 0) {
+                continue; 
             }
 
-            if (mealMenu.carne || mealMenu.peixe || mealMenu.vegetariano) {
-                const dishesBox = new St.BoxLayout({ vertical: true, style_class: 'food-card' });
-                dishesBox.add_child(new St.Label({ text: 'PRATOS', style_class: 'card-title' }));
+            if (item.category === 'soup') {
+                sopaCard = createCard('SOPA', item.text);
+            } else if (item.text) {   
+                let dishName = item.text;
+                
+                let isExtra = false;
+                if (canteenName === 'TrêsDê') {
+                    let txt = item.text.toLowerCase();
+                    if (txt.includes('fruta') || 
+                        txt.includes('sobremesa') ||
+                        txt.includes('bebida') ||
+                        txt.includes('buffet')) {
+                        isExtra = true;
+                    }
+                }
 
-                if (mealMenu.carne) dishesBox.add_child(createDishRow('Carne', mealMenu.carne, 'badge-meat'));
-                if (mealMenu.peixe) dishesBox.add_child(createDishRow('Peixe', mealMenu.peixe, 'badge-fish'));
-                if (mealMenu.vegetariano) dishesBox.add_child(createDishRow('Vegetariano', mealMenu.vegetariano, 'badge-veg'));
+                if (isExtra) {
+                    extrasList.push(dishName);
+                } else {
+                    hasDishes = true;
+                    
+                    if (canteenName == 'ESTGA' && (item.category === 'other' || !item.category)) {
+                        let txt = item.text.toLowerCase();
+                        if (txt.includes('prato de carne')) item.category = 'meat';
+                        else if (txt.includes('prato de peixe')) item.category = 'fish';
+                        else if (txt.includes('prato de dieta')) item.category = 'diet';
+                        dishName = dishName.replace(/^Prato (de )?(Peixe|Carne|Dieta|Vegetariano)\s*[-–—]\s*/i, '').trim();
+                    }
+                    
+                    let label = '';
+                    let badgeClass = ''; 
+                    let price = '';
 
-                this.foodContainer.add_child(dishesBox);
+                    switch (item.category) {
+                        case 'meat':
+                            label = 'Carne';
+                            badgeClass = 'badge-meat';
+                            price = PRICE_NORMAL;
+                            break;
+                        case 'fish':
+                            label = 'Peixe';
+                            badgeClass = 'badge-fish';
+                            price = PRICE_NORMAL;
+                            break;
+                        case 'vegetarian':
+                            label = 'Vegetariano';
+                            badgeClass = 'badge-veg';
+                            price = PRICE_NORMAL;
+                            break;
+                        case 'diet':
+                            label = 'Dieta';
+                            badgeClass = 'badge-diet';
+                            price = PRICE_NORMAL;
+                            break;
+
+                        default:
+                            if (item.tier === 'normal') {
+                                label = 'Normal';
+                                badgeClass = 'badge-normal';
+                                price = PRICE_NORMAL;
+                            } else if (item.tier === 'option') {
+                                label = 'Opção';
+                                badgeClass = 'badge-option';
+                                price = PRICE_OPTION;
+                            }
+                    }
+                    
+                    if (canteenName === 'Grelhados') {
+                        price = PRICE_OTHER;
+                    } 
+                    else if (canteenName === 'TrêsDê') {
+                        price = PRICE_OTHER;
+                        label = '';
+                        badgeClass = '';
+                    }
+    
+                    dishesBox.add_child(createDishRow(label, dishName, price, badgeClass));
+                }
             }
+        }
+
+        if (sopaCard) {
+            this.foodContainer.add_child(sopaCard);
+        }
+
+        if (hasDishes) {
+            this.foodContainer.add_child(dishesBox);
+        }
+
+        if (extrasList.length > 0) {
+            const extras = extrasList.join('\n');
+            const extrasCard = createCard('EXTRAS', extras);
+            this.foodContainer.add_child(extrasCard);
         }
     }
 }
